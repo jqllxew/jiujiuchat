@@ -1,0 +1,39 @@
+api:
+  - url: http://${DOMAIN}/api/plugin/clothes
+    name: recommendClothes
+    description: 根据用户的心情，给用户推荐他有的衣服
+    parameters:
+      type: object
+      required:
+        - mood
+        - gender
+      properties:
+        mood:
+          description: 用户当前的心情，可选值有：开心（happy）, 难过（sad）,生气 （anger）,害怕（fear）,惊喜（ surprise）,厌恶 （disgust）
+          enums:
+            - happy
+            - sad
+            - anger
+            - fear
+            - surprise
+            - disgust
+          type: string
+        gender:
+          type: string
+          enum:
+            - man
+            - woman
+          description: 对话用户的性别，需要询问用户后才知道这个信息
+identifier: chat-plugin-clothes
+author: jqllxew
+#gateway: http://${DOMAIN}/api/plugin/gateway
+homepage: https://github.com/jqllxew/lobe-chat-plugin
+meta:
+  avatar: 🚀
+  tag: test-template
+  title: 穿衣助手
+  description: 穿衣助手-desc
+#ui:
+#  url: http://localhost:3400
+#  height: 200
+version: "1"

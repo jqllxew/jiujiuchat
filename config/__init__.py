@@ -8,6 +8,7 @@ class Configs(BaseSettings):
     API_BASE_URL: str = "/api"  # API version string
     PROJECT_NAME: str = "lobe-chat-plugin"
     PORT: int = 7667
+    DOMAIN: str = os.getenv("DOMAIN", "127.0.0.1:7667")
     # database
     DB_URL: str = ""
     DB_SERVER: str = os.getenv("MYSQL_SERVER", "localhost")
@@ -24,3 +25,9 @@ class Configs(BaseSettings):
                 f"@{self.MYSQL_SERVER}:{self.MYSQL_PORT}/{self.MYSQL_DATABASE}"
             )
         return self.DB_URL
+
+    class Config:
+        env_file = ".env"
+
+
+configs = Configs()

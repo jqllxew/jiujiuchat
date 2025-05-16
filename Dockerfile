@@ -19,11 +19,10 @@ RUN apt-get update && apt-get install -y \
 
 # 为什么不直接 COPY . .
 # 因为 Docker 构建镜像时，每一行 Dockerfile 都是一个 构建层（layer），只要那一层的上下文没有变动，就会使用缓存，而不是重新执行命令。
-# Copy requirements file
 COPY requirements.txt .
 
 # Install Python packages
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 # Copy application files
 COPY . .
@@ -32,4 +31,4 @@ COPY . .
 ENV PYTHONPATH=/app
 
 # Run the application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "7667"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "7667"]
