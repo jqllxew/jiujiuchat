@@ -171,3 +171,8 @@ womanClothes = {
         },
     ],
 }
+
+
+def get_clothes(gender, mood):
+    clothes = manClothes if gender == "man" else womanClothes
+    return clothes.get(mood, clothes["happy"])

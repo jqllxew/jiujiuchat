@@ -1,0 +1,22 @@
+api:
+  - url: http://${DOMAIN}/api/plugin/ocr
+    name: ocr
+    description:
+    parameters:
+      type: object
+      required:
+        - image_base64
+      properties:
+        image_base64:
+          description: 用户提供的图片base64,注意:只需要传图片/PDF的base64值,类似data:image/png;base64的图片头不要传入
+          type: string
+identifier: chat-plugin-ocr
+author: jqllxew
+gateway: http://${DOMAIN}/api/plugin/gateway
+homepage: https://github.com/jqllxew/lobe-chat-plugin
+meta:
+  avatar: 📸
+  tag: test-template
+  title: 火山引擎OCR
+  description: 火山引擎OCR-desc
+version: "1"

@@ -1,6 +1,6 @@
 api:
   - url: http://${DOMAIN}/api/plugin/clothes
-    name: recommendClothes
+    name: clothes
     description: 根据用户的心情，给用户推荐他有的衣服
     parameters:
       type: object
@@ -26,14 +26,14 @@ api:
           description: 对话用户的性别，需要询问用户后才知道这个信息
 identifier: chat-plugin-clothes
 author: jqllxew
-#gateway: http://${DOMAIN}/api/plugin/gateway
+gateway: http://${DOMAIN}/api/plugin/gateway
 homepage: https://github.com/jqllxew/lobe-chat-plugin
 meta:
-  avatar: 🚀
+  avatar: 👚
   tag: test-template
   title: 穿衣助手
   description: 穿衣助手-desc
 #ui:
 #  url: http://localhost:3400
 #  height: 200
-version: "1"
+version: "2"

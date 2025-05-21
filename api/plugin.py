@@ -1,8 +1,10 @@
+import logging
 import re
 from typing import Any
 
+import httpx
 import yaml
-from fastapi import Depends, APIRouter, Body, Request
+from fastapi import Depends, APIRouter, Request
 
 from api.auth import get_current_user
 from config import configs
@@ -11,25 +13,47 @@ from manifest import clothes
 router = APIRouter()
 
 
-@router.get("/manifest/{id}.json")
-def get_manifest(
+@router.get("/manifest/{name}.json")
+def manifest(
     *,
-    id: str,
+    name: str,
 ) -> Any:
-    with open(f"manifest/{id}.yaml", "r", encoding="utf-8") as f:
+    with open(f"manifest/{name}.yaml", "r", encoding="utf-8") as f:
         content = f.read()
     new_content = re.sub(r"\$\{(\w+)\}", lambda x: getattr(configs, x.group(1)), content)
     return yaml.safe_load(new_content)
 
 
+@router.api_route("/gateway", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
+async def gateway(
+    *,
+    _=Depends(get_current_user),
+    req: Request
+) -> Any:
+    async with httpx.AsyncClient() as client:
+        method = req.method
+        data = await req.json()
+        api_name = data.get("apiName", "")
+        api_list = data.get("manifest", {}).get("api", [])
+        api_url = next((x.get("url") for x in api_list if x.get("name") == api_name), None)
+        body = data.get("arguments", {}).encode("utf-8")
+        headers = dict(req.headers)
+        headers.pop("content-length", None)
+        resp = await client.request(method, api_url, headers=headers, content=body)
+        resp_data = resp.json()
+        logging.info("gateway resp: %s", resp_data)
+        return resp_data
+
+
 @router.post("/clothes")
 async def get_clothes(
     *,
-    current_user=Depends(get_current_user),
-    req: Request
-) -> Any:
-    print(current_user)
-    data = await req.json()
-    print(data)
-    _clothes = clothes.manClothes
-    return _clothes["happy"]
+    req: Request,
+    user=Depends(get_current_user)
+):
+    print(user)
+    args = await req.json()
+    print(args)
+    return clothes.get_clothes(**args)
+
+# async def

@@ -9,6 +9,9 @@ class Configs(BaseSettings):
     PROJECT_NAME: str = "lobe-chat-plugin"
     PORT: int = 7667
     DOMAIN: str = os.getenv("DOMAIN", "127.0.0.1:7667")
+    JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", "jqllxew")
+    VOLC_ACCESS_KEY: str = os.getenv("VOLC_ACCESS_KEY", "")
+    VOLC_SECRET_KEY: str = os.getenv("VOLC_SECRET_KEY", "")
     # database
     DB_URL: str = ""
     DB_SERVER: str = os.getenv("MYSQL_SERVER", "localhost")
