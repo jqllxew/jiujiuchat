@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 
 # Install Python packages
-RUN pip install --no-cache-dir -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application files
 COPY . .

@@ -8,20 +8,20 @@ from fastapi import Depends, APIRouter, Request
 
 from api.auth import get_current_user
 from config import configs
-from manifest import clothes
+from manifest import clothes, ocr
 
 router = APIRouter()
 
 
 @router.get("/manifest/{name}.json")
-def manifest(
+async def manifest(
     *,
     name: str,
 ) -> Any:
     with open(f"manifest/{name}.yaml", "r", encoding="utf-8") as f:
         content = f.read()
-    new_content = re.sub(r"\$\{(\w+)\}", lambda x: getattr(configs, x.group(1)), content)
-    return yaml.safe_load(new_content)
+        new_content = re.sub(r"\$\{(\w+)\}", lambda x: getattr(configs, x.group(1)), content)
+        return yaml.safe_load(new_content)
 
 
 @router.api_route("/gateway", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
@@ -49,11 +49,19 @@ async def gateway(
 async def get_clothes(
     *,
     req: Request,
-    user=Depends(get_current_user)
+    _=Depends(get_current_user)
 ):
-    print(user)
     args = await req.json()
-    print(args)
+    logging.info("get_clothes args: %s", args)
     return clothes.get_clothes(**args)
 
-# async def
+
+@router.post("/volcengine-ocr")
+async def get_volcengine_ocr(
+    *,
+    req: Request,
+    _=Depends(get_current_user)
+):
+    args = await req.json()
+    logging.info("get_volcengine_ocr args: %s", args)
+    return ocr.handle(**args)

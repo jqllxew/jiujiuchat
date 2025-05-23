@@ -1,16 +1,16 @@
 api:
-  - url: http://${DOMAIN}/api/plugin/ocr
-    name: ocr
-    description:
+  - url: http://${DOMAIN}/api/plugin/volcengine-ocr
+    name: volcengine-ocr
+    description: 根据用户提供的图片使用火山引擎OCR识别内容
     parameters:
       type: object
       required:
-        - image_base64
+        - image_url
       properties:
-        image_base64:
-          description: 用户提供的图片base64,注意:只需要传图片/PDF的base64值,类似data:image/png;base64的图片头不要传入
+        image_url:
+          description: 用户提供的图片url
           type: string
-identifier: chat-plugin-ocr
+identifier: chat-plugin-volcengine-ocr
 author: jqllxew
 gateway: http://${DOMAIN}/api/plugin/gateway
 homepage: https://github.com/jqllxew/lobe-chat-plugin
@@ -18,5 +18,5 @@ meta:
   avatar: 📸
   tag: test-template
   title: 火山引擎OCR
-  description: 火山引擎OCR-desc
+  description: 抖音火山引擎OCR
 version: "1"

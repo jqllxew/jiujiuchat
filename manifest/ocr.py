@@ -13,16 +13,23 @@ version = "2022-08-31"
 visual_service.set_api_info(action, version)
 
 
-def handle(img_base64: str):
-    return visual_service.ocr_api(action, {"image_base64": img_base64})
+def handle(image_url: str):
+    if not image_url:
+        raise RuntimeError("image_url is empty")
+    prefix = "data:image/png;base64"
+    if image_url.startswith(prefix):
+        image_url = image_url[len(prefix):]
+        return visual_service.ocr_api(action, {"image_base64": image_url})
+    return visual_service.ocr_api(action, {"image_url": image_url})
 
 
 if __name__ == "__main__":
     # 读取并编码图片
-    with open("test.png", "rb") as image_file:
-        image_data = image_file.read()
-        image_base64 = base64.b64encode(image_data).decode('utf-8')
-    print(handle(image_base64))
+    # with open("test.png", "rb") as image_file:
+    #     image_data = image_file.read()
+    #     image_base64 = base64.b64encode(image_data).decode('utf-8')
+    # print(handle(image_base64))
+    print(handle('https://jiujiuchat.oss-cn-chengdu.aliyuncs.com/test.png'))
 # 通用识别
 # 通用OCR
 # action=OCRNormal, version=2020-08-26

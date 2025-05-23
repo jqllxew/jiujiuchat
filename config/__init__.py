@@ -12,6 +12,11 @@ class Configs(BaseSettings):
     JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", "jqllxew")
     VOLC_ACCESS_KEY: str = os.getenv("VOLC_ACCESS_KEY", "")
     VOLC_SECRET_KEY: str = os.getenv("VOLC_SECRET_KEY", "")
+    OSS_ACCESS_KEY_ID: str = os.getenv("OSS_ACCESS_KEY_ID", "")
+    OSS_ACCESS_KEY_SECRET: str = os.getenv("OSS_ACCESS_KEY_SECRET", "")
+    OSS_REGION: str = os.getenv("OSS_REGION", "")
+    OSS_BUCKET: str = os.getenv("OSS_BUCKET", "")
+    OSS_ENDPOINT: str = os.getenv("OSS_ENDPOINT", "")
     # database
     DB_URL: str = ""
     DB_SERVER: str = os.getenv("MYSQL_SERVER", "localhost")
