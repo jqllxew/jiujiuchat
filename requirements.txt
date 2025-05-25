@@ -6,3 +6,4 @@ PyYAML==6.0.2
 python-jose==3.4.0
 pydantic-settings==2.8.1
 alibabacloud-oss-v2==1.1.1
+python-multipart==0.0.20
