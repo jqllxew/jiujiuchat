@@ -2,6 +2,9 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+# ENV http_proxy=http://172.18.202.1:7890
+# ENV https_proxy=http://172.18.202.1:7890
+
 # Install system dependencies
 # 软件包 | 作用 |
 #|--------|------|
