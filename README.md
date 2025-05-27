@@ -1,10 +1,11 @@
 # lobe-chat-plugin
 
+## Docker
 ```bash
 docker build -t lobe-chat-plugin:latest .
+cp .env.example .env
 docker run -d -p 7667:7667 \
-  -e DB_URL=mysql+mysqlconnector://root:root123@127.0.0.1:3306/test \
-  -e DOMAIN=127.0.0.1:7667
+  --env-file .env \
   --name lobe-chat-plugin \
   lobe-chat-plugin
 ```
