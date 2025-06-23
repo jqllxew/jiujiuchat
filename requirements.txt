@@ -7,3 +7,5 @@ python-jose==3.4.0
 pydantic-settings==2.8.1
 alibabacloud-oss-v2==1.1.1
 python-multipart==0.0.20
+wechatpy==1.8.18
+xmltodict==0.14.2

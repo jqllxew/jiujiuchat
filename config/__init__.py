@@ -10,13 +10,19 @@ class Configs(BaseSettings):
     PORT: int = 7667
     DOMAIN: str = os.getenv("DOMAIN", "127.0.0.1:7667")
     JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", "jqllxew")
+    # ocr
     VOLC_ACCESS_KEY: str = os.getenv("VOLC_ACCESS_KEY", "")
     VOLC_SECRET_KEY: str = os.getenv("VOLC_SECRET_KEY", "")
+    # 对象存储
     OSS_ACCESS_KEY_ID: str = os.getenv("OSS_ACCESS_KEY_ID", "")
     OSS_ACCESS_KEY_SECRET: str = os.getenv("OSS_ACCESS_KEY_SECRET", "")
     OSS_REGION: str = os.getenv("OSS_REGION", "")
     OSS_BUCKET: str = os.getenv("OSS_BUCKET", "")
     OSS_ENDPOINT: str = os.getenv("OSS_ENDPOINT", "")
+    # 企微
+    QW_TOKEN: str = os.getenv("QW_TOKEN", "")
+    QW_ENCODING_AES_KEY: str = os.getenv("QW_ENCODING_AES_KEY", "")
+    QW_CORP_ID: str = os.getenv("QW_CORP_ID", "")
     # database
     DB_URL: str = ""
     DB_SERVER: str = os.getenv("MYSQL_SERVER", "localhost")
