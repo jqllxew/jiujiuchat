@@ -15,7 +15,6 @@ WORKDIR /app
 #- `rm -rf /var/lib/apt/lists/*`：清除缓存，减小镜像体积（是 Dockerfile 中常见的优化做法）。
 RUN apt-get update && apt-get install -y \
   build-essential \
-  default-libmysqlclient-dev \
   pkg-config \
   netcat-traditional \
   && rm -rf /var/lib/apt/lists/*

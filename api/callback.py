@@ -1,3 +1,5 @@
+import logging
+
 import xmltodict
 from fastapi import APIRouter, Request
 from starlette.responses import PlainTextResponse
@@ -11,6 +13,7 @@ crypto = WeChatCrypto(configs.QW_TOKEN, configs.QW_ENCODING_AES_KEY, configs.QW_
 
 @router.get("/")
 async def callback_check(req: Request):
+    logging.info("回调校验")
     params = req.query_params
     msg_signature = params.get("msg_signature")
     timestamp = params.get("timestamp")
@@ -28,7 +31,7 @@ async def callback_check(req: Request):
         plain = crypto.decrypt_message(xml, msg_signature, timestamp, nonce)
         return PlainTextResponse(plain)
     except Exception as e:
-        print("验证失败:", e)
+        logging.error("验证失败: ", e)
         return PlainTextResponse("error", status_code=400)
 
 
