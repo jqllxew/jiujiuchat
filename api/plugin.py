@@ -13,7 +13,7 @@ from manifest import clothes, ocr
 router = APIRouter()
 
 
-@router.get("/manifest/{name}.json")
+@router.get("/manifest/{name}.json", summary="插件清单映射")
 async def manifest(
     *,
     name: str,
@@ -24,7 +24,7 @@ async def manifest(
         return yaml.safe_load(new_content)
 
 
-@router.api_route("/gateway", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
+@router.api_route("/gateway", methods=["POST"], summary="插件网关")
 async def gateway(
     *,
     _=Depends(get_current_user),
