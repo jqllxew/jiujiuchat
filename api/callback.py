@@ -1,5 +1,6 @@
 import logging
 
+import requests
 import xmltodict
 from fastapi import APIRouter, Request
 from starlette.responses import PlainTextResponse
@@ -61,6 +62,24 @@ async def callback(req: Request):
     try:
         plain_xml = crypto.decrypt_message(xml_for_decrypt, msg_signature, timestamp, nonce)
         logging.info(f"解密后的明文：\n{plain_xml}")
+
+        plain_dict = xmltodict.parse(plain_xml)
+        xml = plain_dict["xml"]
+
+        # 取 token 和 open_kfid
+        sync_token = xml.get("Token")
+        open_kfid = xml.get("OpenKfId")
+
+        logging.info(f"token: {sync_token}")
+        logging.info(f"open_kfid: {open_kfid}")
+
+        # resp = requests.post(f"https://qyapi.weixin.qq.com/cgi-bin/kf/sync_msg?access_token={}", json={
+        #
+        # }, timeout=10)
+        # resp.raise_for_status()
+        #
+        # data = resp.json()
+        # logging.info(f"sync_msg 响应：{data}")
     except Exception as e:
         logging.error(f"解密失败: {e}")
         return PlainTextResponse("error", status_code=400)
