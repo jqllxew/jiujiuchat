@@ -2,8 +2,8 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# ENV http_proxy=http://172.18.202.1:7890
-# ENV https_proxy=http://172.18.202.1:7890
+ENV http_proxy=http://172.18.202.1:7897
+ENV https_proxy=http://172.18.202.1:7897
 
 # Install system dependencies
 # 软件包 | 作用 |
@@ -16,7 +16,6 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
   build-essential \
   pkg-config \
-  netcat-traditional \
   && rm -rf /var/lib/apt/lists/*
 
 # 为什么不直接 COPY . .

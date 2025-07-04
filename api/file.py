@@ -18,7 +18,7 @@ cfg.endpoint = configs.OSS_ENDPOINT
 client = oss.Client(cfg)
 
 
-@router.post("/upload")
+@router.post("/upload", summary="文件上传")
 async def upload(
     *,
     _=Depends(get_current_user),

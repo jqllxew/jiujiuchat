@@ -23,6 +23,7 @@ class Configs(BaseSettings):
     QW_TOKEN: str = os.getenv("QW_TOKEN", "")
     QW_ENCODING_AES_KEY: str = os.getenv("QW_ENCODING_AES_KEY", "")
     QW_CORP_ID: str = os.getenv("QW_CORP_ID", "")
+    QW_CORP_SECRET: str = os.getenv("QW_CORP_SECRET", "")
     # database
     DB_URL: str = ""
     DB_SERVER: str = os.getenv("MYSQL_SERVER", "localhost")

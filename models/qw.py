@@ -9,9 +9,9 @@ class QwAccessToken(Base, TimestampMixin):
     __tablename__ = "qw_access_token"
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
-    access_token = Column(String, nullable=False)
-    _expires_in = Column("expires_in", Integer, nullable=False)
-    expires_at = Column(DateTime, nullable=False)
+    access_token = Column(String, nullable=False, comment="企业微信Token")
+    _expires_in = Column("expires_in", Integer, nullable=False, comment="过期时长/s")
+    expires_at = Column(DateTime, nullable=False, comment="过期时间")
 
     @property
     def expires_in(self):
