@@ -17,6 +17,6 @@ homepage: https://github.com/jqllxew/lobe-chat-plugin
 meta:
   avatar: 📸
   tag: test-template
-  title: 火山引擎OCR
-  description: 抖音火山引擎OCR
+  title: 图像识别辅助
+  description: 图像OCR识别
 version: "1"

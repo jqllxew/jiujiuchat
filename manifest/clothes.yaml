@@ -31,8 +31,8 @@ homepage: https://github.com/jqllxew/lobe-chat-plugin
 meta:
   avatar: 👚
   tag: test-template
-  title: 穿衣助手
-  description: 穿衣助手-desc
+  title: 心情穿搭推荐
+  description: 根据心情推荐合适的穿搭风格～
 #ui:
 #  url: http://localhost:3400
 #  height: 200
