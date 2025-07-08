@@ -1,15 +1,23 @@
 import logging
 
-import requests
 import xmltodict
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Depends, requests
 from starlette.responses import PlainTextResponse
 from wechatpy.crypto import WeChatCrypto
 
 from config import configs
+from services import get_service, TokenService
 
 router = APIRouter()
 crypto = WeChatCrypto(configs.QW_TOKEN, configs.QW_ENCODING_AES_KEY, configs.QW_CORP_ID)
+
+
+@router.get("/test")
+async def test_get_token(
+    token_service: TokenService = Depends(get_service(TokenService))
+):
+    token = token_service.get_token()
+    return token
 
 
 @router.get("/")
@@ -37,7 +45,10 @@ async def callback_check(req: Request):
 
 
 @router.post("/")
-async def callback(req: Request):
+async def callback(
+    req: Request,
+    token_service: TokenService = Depends(get_service(TokenService))
+):
     body_bytes = await req.body()
     body_str = body_bytes.decode("utf-8")
     try:
@@ -73,13 +84,18 @@ async def callback(req: Request):
         logging.info(f"token: {sync_token}")
         logging.info(f"open_kfid: {open_kfid}")
 
-        # resp = requests.post(f"https://qyapi.weixin.qq.com/cgi-bin/kf/sync_msg?access_token={}", json={
-        #
-        # }, timeout=10)
-        # resp.raise_for_status()
-        #
-        # data = resp.json()
-        # logging.info(f"sync_msg 响应：{data}")
+        token = token_service.get_token()
+
+        resp = requests.post(f"https://qyapi.weixin.qq.com/cgi-bin/kf/sync_msg?access_token={token.access_token}", json={
+            # "cursor": "4gw7MepFLfgF2VC5npN",
+            "token": sync_token,
+            # "limit": 1000,
+            # "voice_format": 0,
+            "open_kfid": open_kfid
+        }, timeout=10)
+        resp.raise_for_status()
+        data = resp.json()
+        logging.info(f"sync_msg 响应：{data}")
     except Exception as e:
         logging.error(f"解密失败: {e}")
         return PlainTextResponse("error", status_code=400)

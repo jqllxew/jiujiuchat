@@ -20,4 +20,4 @@ class QwAccessToken(Base, TimestampMixin):
     @expires_in.setter
     def expires_in(self, value):
         self._expires_in = value
-        self.expires_at = datetime.utcnow() + timedelta(seconds=value)
+        self.expires_at = datetime.now() + timedelta(seconds=value)
