@@ -1,7 +1,8 @@
 import logging
 
+import requests
 import xmltodict
-from fastapi import APIRouter, Request, Depends, requests
+from fastapi import APIRouter, Request, Depends
 from starlette.responses import PlainTextResponse
 from wechatpy.crypto import WeChatCrypto
 
@@ -87,7 +88,7 @@ async def callback(
         token = token_service.get_token()
 
         resp = requests.post(f"https://qyapi.weixin.qq.com/cgi-bin/kf/sync_msg?access_token={token.access_token}", json={
-            # "cursor": "4gw7MepFLfgF2VC5npN",
+            # "cursor": "",
             "token": sync_token,
             # "limit": 1000,
             # "voice_format": 0,
