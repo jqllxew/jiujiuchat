@@ -1,14 +1,16 @@
-from sqlalchemy import create_engine, event
+from sqlalchemy import event
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 
 from config import configs
 
-_engine = create_engine(configs.get_db_url)
-_session = sessionmaker(
+_engine = create_async_engine(configs.get_db_url)
+_session = sessionmaker(  # type: ignore
+    bind=_engine,
+    class_=AsyncSession,
+    expire_on_commit=False,
     autocommit=False,
     autoflush=False,
-    expire_on_commit=False,
-    bind=_engine,
 )
 
 
@@ -16,15 +18,12 @@ def _before_cursor_execute(conn, cursor, statement, parameters, context, execute
     print(f"--> SQL: {statement} | {parameters}")
 
 
-event.listen(_engine, "before_cursor_execute", _before_cursor_execute)
+event.listen(_engine.sync_engine, "before_cursor_execute", _before_cursor_execute)
 
 
-def get_db():
-    db = _session()
-    try:
+async def get_db():
+    async with _session() as db:
         yield db
-    finally:
-        db.close()
 
 
 def dispose():

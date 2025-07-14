@@ -36,7 +36,7 @@ class Configs(BaseSettings):
     def get_db_url(self) -> str:
         if not self.DB_URL:
             self.DB_URL = (
-                f"postgresql+psycopg2://{self.DB_USER}:{self.DB_PASSWORD}"
+                f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASSWORD}"
                 f"@{self.DB_SERVER}:{self.DB_PORT}/{self.DB_DATABASE}"
             )
         return self.DB_URL

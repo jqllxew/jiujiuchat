@@ -17,7 +17,7 @@ crypto = WeChatCrypto(configs.QW_TOKEN, configs.QW_ENCODING_AES_KEY, configs.QW_
 async def test_get_token(
     token_service: TokenService = Depends(get_service(TokenService))
 ):
-    token = token_service.get_token()
+    token = await token_service.get_token()
     return token
 
 
@@ -85,7 +85,7 @@ async def callback(
         logging.info(f"token: {sync_token}")
         logging.info(f"open_kfid: {open_kfid}")
 
-        token = token_service.get_token()
+        token = await token_service.get_token()
 
         resp = requests.post(f"https://qyapi.weixin.qq.com/cgi-bin/kf/sync_msg?access_token={token.access_token}", json={
             # "cursor": "",

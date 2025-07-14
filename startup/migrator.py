@@ -18,8 +18,7 @@ class DatabaseMigrator:
     Database migrator class
     """
 
-    def __init__(self, db_url: str):
-        self.db_url = db_url
+    def __init__(self):
         self.alembic_cfg = self._get_alembic_config()
 
     @contextmanager
@@ -31,7 +30,8 @@ class DatabaseMigrator:
             SQLAlchemy connection object
         """
         engine = create_engine(
-            self.db_url, connect_args={"connect_timeout": 3}  # 连接超时为3秒
+            self.alembic_cfg.get_main_option("sqlalchemy.url"),
+            connect_args={"connect_timeout": 3}  # 连接超时为3秒
         )
         try:
             with engine.connect() as connection:
@@ -71,7 +71,7 @@ class DatabaseMigrator:
         """
         project_root = Path(__file__).resolve().parents[1]
         alembic_cfg = Config(project_root / "alembic.ini")
-        alembic_cfg.set_main_option("sqlalchemy.url", self.db_url)
+        # alembic_cfg.set_main_option("sqlalchemy.url", self.db_url)
         return alembic_cfg
 
     def run_migrations(self) -> None:
@@ -86,7 +86,7 @@ class DatabaseMigrator:
             needs_migration, current_rev, head_rev = self.check_migration_needed()
             if needs_migration:
                 logger.info(f"Current revision: {current_rev}, upgrading to: {head_rev}")
-                self.alembic_cfg.set_main_option("sqlalchemy.url", self.db_url)
+                # self.alembic_cfg.set_main_option("sqlalchemy.url", self.db_url)
 
                 # 执行 alembic 升级
                 alembic_main(argv=["--raiseerr", "upgrade", "head"], config=self.alembic_cfg)

@@ -19,7 +19,7 @@ logging.basicConfig(
 async def lifespan(_: FastAPI):
     import db
     logging.info("🚀 start")
-    migrator = DatabaseMigrator(configs.get_db_url)
+    migrator = DatabaseMigrator()
     migrator.run_migrations()
     yield
     db.dispose()

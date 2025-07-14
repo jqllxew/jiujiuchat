@@ -63,8 +63,10 @@ def run_migrations_online() -> None:
 
     """
     print("run migrations online")
+    configuration = config.get_section(config.config_ini_section)
+    # configuration["sqlalchemy.url"] = configs.get_db_url
     connectable = engine_from_config(
-        config.get_section(config.config_ini_section, {}),
+        configuration,
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )
