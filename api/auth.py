@@ -6,7 +6,7 @@ from jose import jwt
 from config import configs
 
 
-def get_current_user(req: Request, token: str = Header("", alias="X-lobe-chat-auth")) -> dict:
+def get_lobe_user(req: Request, token: str = Header("", alias="X-lobe-chat-auth")) -> dict:
     if not token:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="token 不存在")
     hashed_key = hashlib.sha256(configs.JWT_SECRET_KEY.encode('utf-8')).digest()

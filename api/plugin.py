@@ -6,7 +6,7 @@ import httpx
 import yaml
 from fastapi import Depends, APIRouter, Request
 
-from api.auth import get_current_user
+from api.auth import get_lobe_user
 from config import configs
 from manifest import clothes, ocr
 
@@ -27,7 +27,7 @@ async def manifest(
 @router.api_route("/gateway", methods=["POST"], summary="插件网关")
 async def gateway(
     *,
-    _=Depends(get_current_user),
+    _=Depends(get_lobe_user),
     req: Request
 ) -> Any:
     async with httpx.AsyncClient() as client:
@@ -49,7 +49,7 @@ async def gateway(
 async def get_clothes(
     *,
     req: Request,
-    _=Depends(get_current_user)
+    _=Depends(get_lobe_user)
 ):
     args = await req.json()
     logging.info("get_clothes args: %s", args)
@@ -60,7 +60,7 @@ async def get_clothes(
 async def get_volcengine_ocr(
     *,
     req: Request,
-    _=Depends(get_current_user)
+    _=Depends(get_lobe_user)
 ):
     args = await req.json()
     logging.info("get_volcengine_ocr args: %s", args)

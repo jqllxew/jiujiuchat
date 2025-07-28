@@ -6,7 +6,7 @@ import alibabacloud_oss_v2 as oss
 from alibabacloud_oss_v2.credentials import StaticCredentialsProvider
 from fastapi import APIRouter, Depends, UploadFile, File
 
-from api.auth import get_current_user
+from api.auth import get_lobe_user
 from config import configs
 
 router = APIRouter()
@@ -21,7 +21,7 @@ client = oss.Client(cfg)
 @router.post("/upload", summary="文件上传")
 async def upload(
     *,
-    _=Depends(get_current_user),
+    _=Depends(get_lobe_user),
     file: UploadFile = File(...),
 ):
     data = await file.read()

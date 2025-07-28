@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timedelta
 
 import requests
@@ -32,4 +33,25 @@ class TokenService(BaseService):
 
 
 class MsgService(BaseService):
-    ...
+
+    async def save_msg(self, xml, access_token):
+        # 取 token 和 open_kfid
+        sync_token = xml.get("Token")
+        open_kfid = xml.get("OpenKfId")
+        logging.info(f"token: {sync_token}")
+        logging.info(f"open_kfid: {open_kfid}")
+        resp = requests.post(
+            f"https://qyapi.weixin.qq.com/cgi-bin/kf/sync_msg?access_token={access_token}",
+            json={
+                 # "cursor": "",
+                 "token": sync_token,
+                 # "limit": 1000,
+                 # "voice_format": 0,
+                 "open_kfid": open_kfid
+            }, timeout=10)
+        resp.raise_for_status()
+        data = resp.json()
+        next_cursor = data.get("next_cursor")
+
+        logging.info(f"sync_msg 响应：{data}")
+        ...
