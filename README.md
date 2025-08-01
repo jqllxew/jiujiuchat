@@ -9,3 +9,9 @@ docker run -d -p 7667:7667 \
   --name jiujiu-chat \
   jiujiu-chat
 ```
+
+## Alembic
+```bash
+# 生成变更脚本
+alembic revision --autogenerate -m "xxx"
+```
