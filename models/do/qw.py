@@ -2,10 +2,10 @@ from datetime import datetime, timedelta
 
 from sqlalchemy import Column, Integer, BigInteger, String, DateTime
 
-from .base import Base, TimestampMixin
+from .base import Base, SuperDO
 
 
-class QwAccessToken(Base, TimestampMixin):
+class QwAccessToken(Base, SuperDO):
     __tablename__ = "qw_access_token"
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)

@@ -1,17 +1,17 @@
 import random
 import string
-from typing import Any
 
 from captcha.image import ImageCaptcha
 from fastapi import APIRouter, Depends, Response, Query
 from redis.asyncio import Redis
-from starlette import status
-from starlette.exceptions import HTTPException
 
+from api.component.auth import get_app_user
 from db import get_redis
-from models.do import TimestampMixin
+from models.do import SuperDO
 from models.vo import RegisterVO
-import pydantic
+from models.vo.login import LoginVO
+from services import get_service
+from services.login import LoginService
 
 router = APIRouter()
 
@@ -28,7 +28,7 @@ async def get_captcha(
     height: int = Query(60, ge=50, description="高度"),
 ):
     code = generate_code()
-    captcha_id = str(TimestampMixin.generate_id())
+    captcha_id = str(SuperDO.generate_id())
     image = ImageCaptcha(width=width, height=height)
     data = image.generate(code)
     await redis.setex(f"captcha:{captcha_id}", 180, code)
@@ -40,15 +40,28 @@ async def get_captcha(
 
 
 @router.post("/register", summary="注册")
-async def register(register_vo: RegisterVO):
-    # raise ValueError("测试")
-    return register_vo
+async def register(
+    *,
+    register_vo: RegisterVO,
+    login_service: LoginService = Depends(get_service(LoginService)),
+):
+    user = await login_service.register(register_vo)
+    return user
 
 
 @router.post("/login", summary="登录")
 async def login(
     *,
-    phone: str,
-    passwd: str
-) -> Any:
-    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+    login_vo: LoginVO,
+    login_service: LoginService = Depends(get_service(LoginService))
+):
+    jwt_token = await login_service.login(login_vo)
+    return jwt_token
+
+
+@router.get("/session", summary="获取登录用户")
+async def session(
+    *,
+    user=Depends(get_app_user)
+):
+    return user

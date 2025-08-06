@@ -1,11 +1,11 @@
-from .base import Base, TimestampMixin
+from .base import Base, SuperDO
 from .qw import QwAccessToken
 from .user import User, UserPrompt
 from .ai import Client, Session, SessionRole
 
 __all__ = [
     "Base",
-    "TimestampMixin",
+    "SuperDO",
     "QwAccessToken",
     "Client",
     "Session",

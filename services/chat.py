@@ -2,7 +2,7 @@ import openai
 from openai import AsyncOpenAI
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from services import BaseService
+from services.base import BaseService
 
 
 class ChatService(BaseService):

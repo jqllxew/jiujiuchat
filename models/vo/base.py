@@ -1,4 +1,3 @@
-from typing import ClassVar
 
 import pydantic_core
 from pydantic import BaseModel, model_validator, ValidationError
