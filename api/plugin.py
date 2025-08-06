@@ -18,7 +18,7 @@ async def manifest(
     *,
     name: str,
 ) -> Any:
-    with open(f"manifest/{name}.yaml", "r", encoding="utf-8") as f:
+    with open(f"config/manifest/{name}.yaml", "r", encoding="utf-8") as f:
         content = f.read()
         new_content = re.sub(r"\$\{(\w+)\}", lambda x: getattr(configs, x.group(1)), content)
         return yaml.safe_load(new_content)
