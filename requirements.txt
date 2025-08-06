@@ -15,3 +15,5 @@ alembic>=1.15.1
 asyncpg==0.30.0
 openai==1.68.2
 snowflake-id==1.0.2
+redis==6.2.0
+captcha==0.7.1

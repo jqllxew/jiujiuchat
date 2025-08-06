@@ -6,7 +6,7 @@ import alibabacloud_oss_v2 as oss
 from alibabacloud_oss_v2.credentials import StaticCredentialsProvider
 from fastapi import APIRouter, Depends, UploadFile, File
 
-from api.auth import get_lobe_user
+from api.component.auth import get_lobe_user
 from config import configs
 
 router = APIRouter()

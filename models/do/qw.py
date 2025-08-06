@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from sqlalchemy import Column, Integer, BigInteger, String, DateTime
 
-from models.base import Base, TimestampMixin
+from .base import Base, TimestampMixin
 
 
 class QwAccessToken(Base, TimestampMixin):

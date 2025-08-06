@@ -1,4 +1,4 @@
-# lobe-chat-plugin
+# jiujiu-chat
 
 ## Docker
 ```bash

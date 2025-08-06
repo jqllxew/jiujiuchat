@@ -6,7 +6,7 @@ from pydantic_settings import BaseSettings
 class Configs(BaseSettings):
     VERSION: str = "0.1.0"  # Project version
     API_BASE_URL: str = "/api"  # API version string
-    PROJECT_NAME: str = "lobe-chat-plugin"
+    PROJECT_NAME: str = "jiujiu-chat"
     PORT: int = 7667
     DOMAIN: str = os.getenv("DOMAIN", "127.0.0.1:7667")
     JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", "jqllxew")
@@ -26,11 +26,16 @@ class Configs(BaseSettings):
     QW_CORP_SECRET: str = os.getenv("QW_CORP_SECRET", "")
     # database
     DB_URL: str = ""
-    DB_SERVER: str = os.getenv("MYSQL_SERVER", "localhost")
-    DB_PORT: int = int(os.getenv("MYSQL_PORT", "3306"))
-    DB_USER: str = os.getenv("MYSQL_USER", "jqllxew")
-    DB_PASSWORD: str = os.getenv("MYSQL_PASSWORD", "jqllxew")
-    DB_DATABASE: str = os.getenv("MYSQL_DATABASE", "test")
+    DB_SERVER: str = os.getenv("DB_SERVER", "localhost")
+    DB_PORT: int = int(os.getenv("DB_PORT", "3306"))
+    DB_USER: str = os.getenv("DB_USER", "jqllxew")
+    DB_PASSWORD: str = os.getenv("DB_PASSWORD", "jqllxew")
+    DB_DATABASE: str = os.getenv("DB_DATABASE", "test")
+    # redis
+    REDIS_SERVER: str = os.getenv("REDIS_SERVER", "localhost")
+    REDIS_PORT: int = int(os.getenv("REDIS_PORT", "6379"))
+    REDIS_PASSWORD: str = os.getenv("REDIS_PASSWORD", "")
+    REDIS_DATABASE: int = os.getenv("REDIS_DATABASE", 0)
 
     @property
     def get_db_url(self) -> str:

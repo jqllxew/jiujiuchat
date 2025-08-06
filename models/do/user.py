@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String, Integer, Text
 
-from models.base import Base, TimestampMixin
+from .base import Base, TimestampMixin
 
 
 class User(Base, TimestampMixin):
@@ -14,7 +14,6 @@ class User(Base, TimestampMixin):
 
 class UserPrompt(Base,TimestampMixin):
     __tablename__ = "user_prompt"
-
 
     id = Column(String, primary_key=True, default=TimestampMixin.generate_id())
     user_id = Column(String,comment="用户id")

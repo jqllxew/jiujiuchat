@@ -6,7 +6,7 @@ import httpx
 import yaml
 from fastapi import Depends, APIRouter, Request
 
-from api.auth import get_lobe_user
+from api.component.auth import get_lobe_user
 from config import configs
 from manifest import clothes, ocr
 

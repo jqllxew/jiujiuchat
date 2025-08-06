@@ -13,7 +13,7 @@ api:
 identifier: chat-plugin-volcengine-ocr
 author: jqllxew
 gateway: http://${DOMAIN}/api/plugin/gateway
-homepage: https://github.com/jqllxew/lobe-chat-plugin
+homepage: https://github.com/jqllxew/jiujiuchat
 meta:
   avatar: 📸
   tag: test-template

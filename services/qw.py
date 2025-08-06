@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import requests
 from sqlalchemy import select
 from config import configs
-from models import QwAccessToken
+from models.do import QwAccessToken
 from services.base import BaseService
 
 

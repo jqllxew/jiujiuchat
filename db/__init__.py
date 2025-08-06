@@ -3,6 +3,8 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 
 from config import configs
+from redis.asyncio import Redis
+from fastapi import Request
 
 _engine = create_async_engine(configs.get_db_url)
 _session = sessionmaker(  # type: ignore
@@ -11,6 +13,15 @@ _session = sessionmaker(  # type: ignore
     expire_on_commit=False,
     autocommit=False,
     autoflush=False,
+)
+
+
+redis_client = Redis(
+    host=configs.REDIS_SERVER,
+    port=configs.REDIS_PORT,
+    password=configs.REDIS_PASSWORD,
+    db=configs.REDIS_DATABASE,
+    decode_responses=True,
 )
 
 
@@ -26,5 +37,10 @@ async def get_db():
         yield db
 
 
-def dispose():
-    _engine.dispose()
+async def get_redis(req: Request) -> Redis:
+    return req.app.state.redis
+
+
+async def dispose():
+    await _engine.dispose()
+    await redis_client.close()

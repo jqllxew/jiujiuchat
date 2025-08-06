@@ -2,7 +2,7 @@ import enum
 
 from sqlalchemy import Column, String, Enum, Text
 
-from models.base import TimestampMixin, Base
+from .base import TimestampMixin, Base
 
 
 class SessionRole(enum.Enum):
