@@ -31,7 +31,7 @@ async def upload(
     md5 = hashlib.md5(data).hexdigest()
     result = client.put_object(oss.PutObjectRequest(
         bucket=configs.OSS_BUCKET,
-        key=f"{md5}{suffix}",
+        key=f"image/{md5}{suffix}",
         body=data,
     ))
     if result.status_code == 200:
@@ -42,7 +42,7 @@ async def upload(
             f' etag: {result.etag},'
             f' hash crc64: {result.hash_crc64},'
             f' version id: {result.version_id},')
-        url = f"https://{configs.OSS_BUCKET}.{configs.OSS_ENDPOINT}/{md5}{suffix}"
+        url = f"https://{configs.OSS_BUCKET}.{configs.OSS_ENDPOINT}/image/{md5}{suffix}"
         return {"msg": "file uploaded", "url": url}
     else:
         logging.error(result)

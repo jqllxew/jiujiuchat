@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 import uvicorn
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
+from fastapi.openapi.docs import get_swagger_ui_html, get_swagger_ui_oauth2_redirect_html
 from starlette.middleware.cors import CORSMiddleware
 
 from api import api_router
@@ -34,6 +35,7 @@ app = FastAPI(
     version=configs.VERSION,
     openapi_url=f"{configs.API_BASE_URL}/openapi.json",
     lifespan=lifespan,
+    docs_url=None
 )
 app.add_middleware(
     CORSMiddleware,  # type: ignore
@@ -46,6 +48,17 @@ app.include_router(api_router, prefix=configs.API_BASE_URL)
 app.add_exception_handler(RequestValidationError, validation_exception_handler)
 app.add_exception_handler(ServiceException, service_exception_handler)
 app.add_exception_handler(Exception, global_exception_handler)
+
+
+@app.get("/docs", include_in_schema=False)
+async def custom_swagger_docs():
+    return get_swagger_ui_html(
+        openapi_url="/api/openapi.json",
+        title="啾啾API",
+        swagger_js_url="https://jiujiuchat.oss-cn-chengdu.aliyuncs.com/swagger-ui-bundle.js",
+        swagger_css_url="https://jiujiuchat.oss-cn-chengdu.aliyuncs.com/swagger-ui.css",
+    )
+
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=configs.PORT)
