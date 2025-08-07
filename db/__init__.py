@@ -1,3 +1,5 @@
+import logging
+
 from sqlalchemy import event
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
@@ -26,7 +28,7 @@ redis_client = Redis(
 
 
 def _before_cursor_execute(conn, cursor, statement, parameters, context, executemany):
-    print(f"--> SQL: {statement} | {parameters}")
+    logging.info(f"SQL: {statement} | {parameters}")
 
 
 event.listen(_engine.sync_engine, "before_cursor_execute", _before_cursor_execute)

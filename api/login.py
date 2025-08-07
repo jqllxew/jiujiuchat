@@ -20,7 +20,7 @@ def generate_code(length=4):
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
 
 
-@router.get("/captcha", summary="验证码")
+@router.get("/captcha", summary="图形验证码")
 async def get_captcha(
     *,
     redis: Redis = Depends(get_redis),
@@ -37,6 +37,13 @@ async def get_captcha(
         media_type="image/png",
         headers={"X-Captcha-Id": captcha_id}
     )
+
+
+@router.get("/captcha-sms", summary="短信验证码")
+async def get_captcha_sms(
+
+):
+    ...
 
 
 @router.post("/register", summary="注册")
