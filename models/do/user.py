@@ -22,4 +22,5 @@ class UserPrompt(Base, SuperDO):
     user_id = Column(String,comment="用户id")
     prompt = Column(Text,comment="人设")
     title = Column(String,comment="标题")
+    state = Column(String,comment="状态")
 
