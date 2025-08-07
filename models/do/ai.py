@@ -7,6 +7,7 @@ from .base import SuperDO, Base
 class SessionRole(enum.Enum):
     ASST = "asst"
     USER = "user"
+    SYSTEM = "system"
 
 
 class Client(Base, SuperDO):

@@ -5,13 +5,11 @@ from typing import Type, TypeVar
 from pydantic import BaseModel
 from sqlalchemy import Column, DateTime
 from sqlalchemy.orm import declarative_base
-from snowflake import SnowflakeGenerator
+from config.id import Snowflake
 
+snowflake = Snowflake(1, 1)
 Base = declarative_base()
-generator = SnowflakeGenerator(1)
 T = TypeVar("T", bound="SuperDO")
-
-_lock = threading.Lock()
 
 
 class SuperDO:
@@ -20,8 +18,7 @@ class SuperDO:
 
     @staticmethod
     def generate_id():
-        with _lock:
-            return str(next(generator))
+        return snowflake.next_id()
 
     @classmethod
     def from_vo(cls: Type[T], vo: BaseModel) -> T:
