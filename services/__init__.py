@@ -4,6 +4,7 @@ from fastapi import Depends
 
 from db import get_db, get_redis
 from .base import BaseService
+from .prompt import PromptService
 from .qw import TokenService
 from .user import UserService
 
@@ -20,5 +21,6 @@ __all__ = [
     "get_service",
     "BaseService",
     "TokenService",
-    "UserService"
+    "UserService",
+    "PromptService",
 ]

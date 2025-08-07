@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from api import plugin, file, callback, login
+from api import plugin, file, callback, login, prompt
 
 from api import plugin, file, callback, user
 
@@ -11,3 +11,5 @@ api_router.include_router(callback.router, prefix="/callback", tags=["回调"])
 api_router.include_router(login.router, prefix="/login", tags=["登录"])
 
 api_router.include_router(user.router,prefix="/user" ,tags=["用户"])
+
+api_router.include_router(prompt.router, prefix="/prompts", tags=["系统人设管理"])  # 新增

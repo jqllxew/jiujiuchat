@@ -18,7 +18,7 @@ class SuperDO:
 
     @staticmethod
     def generate_id():
-        return snowflake.next_id()
+        return str(snowflake.next_id())
 
     @classmethod
     def from_vo(cls: Type[T], vo: BaseModel) -> T:
