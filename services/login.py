@@ -2,7 +2,7 @@ import hashlib
 from datetime import timedelta, datetime
 
 from jose import jwt
-from sqlalchemy import select
+from sqlalchemy import select, func
 
 from config import configs
 from models.vo import RegisterVO
@@ -34,7 +34,7 @@ class LoginService(BaseService):
 
     async def register(self, vo: RegisterVO):
         # captcha_id = await self.check_captcha(vo.captcha_id, vo.captcha_code)
-        count = await self.select_first(select(User).where(
+        count = await self.select_first(select(func.count()).select_from(User).where(
             User.phone.__eq__(vo.phone)
         ))
         if count:

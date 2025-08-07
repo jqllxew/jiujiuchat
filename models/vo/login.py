@@ -1,4 +1,4 @@
-from pydantic import field_validator, Field, model_validator
+from pydantic import field_validator, Field
 from models.vo.base import BaseReq
 
 

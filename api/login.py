@@ -41,9 +41,10 @@ async def get_captcha(
 
 @router.get("/captcha-sms", summary="短信验证码")
 async def get_captcha_sms(
-
+    *,
+    phone: str = Query(..., pattern=r"^1[3-9]\d{9}$", description="手机号")
 ):
-    ...
+    return {"msg": "ok"}
 
 
 @router.post("/register", summary="注册")

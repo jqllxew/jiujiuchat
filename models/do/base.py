@@ -1,3 +1,4 @@
+import threading
 from datetime import datetime
 from typing import Type, TypeVar
 
@@ -10,6 +11,8 @@ Base = declarative_base()
 generator = SnowflakeGenerator(1)
 T = TypeVar("T", bound="SuperDO")
 
+_lock = threading.Lock()
+
 
 class SuperDO:
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
@@ -17,7 +20,8 @@ class SuperDO:
 
     @staticmethod
     def generate_id():
-        return str(next(generator))
+        with _lock:
+            return str(next(generator))
 
     @classmethod
     def from_vo(cls: Type[T], vo: BaseModel) -> T:

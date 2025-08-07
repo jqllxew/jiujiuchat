@@ -6,7 +6,12 @@ from starlette.status import HTTP_400_BAD_REQUEST, HTTP_422_UNPROCESSABLE_ENTITY
 
 
 class ServiceException(Exception):
-    pass
+    def __init__(self, msg: str, code: int | None = None) -> None:
+        self.msg = msg
+        self.code = code
+
+    def __str__(self) -> str:
+        return self.msg
 
 
 async def validation_exception_handler(req: Request, exc: Exception):
@@ -27,7 +32,7 @@ async def validation_exception_handler(req: Request, exc: Exception):
 async def service_exception_handler(req: Request, exc: Exception):
     if isinstance(exc, ServiceException):
         return JSONResponse(
-            status_code=HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=HTTP_422_UNPROCESSABLE_ENTITY if exc.code is None else exc.code,
             content={
                 "msg": [f"{str(exc)}"],
             },

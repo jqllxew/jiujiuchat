@@ -1,23 +1,26 @@
 import hashlib
 import logging
 
-from fastapi import Header, status, HTTPException, Request
+from fastapi import Header, Request
 from jose import jwt
+from starlette.status import HTTP_401_UNAUTHORIZED
+
 from config import configs
+from config.exc import ServiceException
 
 
 def _get_userinfo(req: Request, token: str) -> dict:
     if not token:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="token 不存在")
+        raise ServiceException("token 不存在", HTTP_401_UNAUTHORIZED)
     hashed_key = hashlib.sha256(configs.JWT_SECRET_KEY.encode('utf-8')).digest()
     try:
         userinfo = jwt.decode(token, hashed_key, algorithms="HS256")  # type: ignore
         logging.info("url: %s, user_info: %s", req.url.path, userinfo)
         return userinfo
     except jwt.ExpiredSignatureError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="token 已过期")
+        raise ServiceException("token 已过期", HTTP_401_UNAUTHORIZED)
     except jwt.JWTError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="token 非法")
+        raise ServiceException("token 非法", HTTP_401_UNAUTHORIZED)
 
 
 # lobe-chat 测试端身份校验
