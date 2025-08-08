@@ -1,5 +1,7 @@
 from fastapi import APIRouter
-from api import plugin, file, callback, login, prompt
+from pkg_resources import evaluate_marker
+
+from api import plugin, file, callback, login, prompt, evaluate
 
 from api import plugin, file, callback, user
 
@@ -14,4 +16,4 @@ api_router.include_router(user.router,prefix="/user" ,tags=["用户"])
 
 api_router.include_router(prompt.router, prefix="/prompts", tags=["系统人设管理"])  # 新增
 
-api_router.include_router(prompt.router,prefix="/evaluate",tags=["评估"])
+api_router.include_router(evaluate.router,prefix="/evaluate",tags=["评估"])
