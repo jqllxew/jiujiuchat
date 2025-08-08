@@ -10,6 +10,7 @@ class EvaluateCreateRequest(BaseReq):
     """创建评估记录请求模型"""
     question_groups: str = Field(..., description="问题组")
     question: str = Field(..., description="问题内容")
+    question_content :str =Field(...,description="问题详细内容")
     answer: List[str] = Field(..., description="答案列表")
 
 
@@ -17,6 +18,7 @@ class EvaluateUpdateRequest(BaseReq):
     """更新评估记录请求模型"""
     question_groups: Optional[str] = None
     question: Optional[str] = None
+    question_content: Optional[str] = None
     answer: Optional[List[str]] = None
 
 
@@ -25,6 +27,7 @@ class EvaluateResponse(BaseResp):
     id: str
     question_groups: str
     question: str
+    question_content: str
     answer: List[str]
     created_at: datetime
     updated_at: datetime
@@ -43,3 +46,4 @@ class EvaluateSearchRequest(BaseReq):
     """搜索评估记录请求模型"""
     question_keyword: Optional[str] = None
     groups_keyword: Optional[str] = None
+    question_content: Optional[str] = None

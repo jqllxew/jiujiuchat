@@ -9,4 +9,6 @@ class Evaluate(Base,SuperDO):
     id: str = Column(String, primary_key=True, default=SuperDO.generate_id)
     question_groups : str = Column(Text, nullable=False)
     question: str = Column(Text, nullable=False)
+    question_content: str = Column(Text, nullable=False)
     answer: str = Column(ARRAY(String), nullable=False)
+

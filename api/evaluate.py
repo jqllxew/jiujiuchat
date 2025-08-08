@@ -19,10 +19,11 @@ async def create_evaluate(
     """创建新的评估记录"""
     evaluate = await evaluate_service.create_evaluate(
         question_groups=request.question_groups,
+        question_content=request.question_content,
         question=request.question,
         answer=request.answer
     )
-    return EvaluateResponse.from_orm(evaluate)
+    return EvaluateResponse.from_do(evaluate)
 
 
 @router.get("/{evaluate_id}", response_model=EvaluateResponse, summary="获取评估记录")
@@ -34,7 +35,7 @@ async def get_evaluate(
     evaluate = await evaluate_service.get_evaluate(evaluate_id)
     if not evaluate:
         raise HTTPException(status_code=404, detail="评估记录不存在")
-    return EvaluateResponse.from_orm(evaluate)
+    return EvaluateResponse.from_do(evaluate)
 
 
 @router.get("", response_model=EvaluateListResponse, summary="获取评估记录列表")
@@ -47,7 +48,7 @@ async def get_evaluates(
     evaluates = await evaluate_service.get_all_evaluates(limit=limit, offset=offset)
     return EvaluateListResponse(
         total=len(evaluates),
-        items=[EvaluateResponse.from_orm(e) for e in evaluates]
+        items=[EvaluateResponse.from_do(e) for e in evaluates]
     )
 
 
@@ -64,7 +65,7 @@ async def update_evaluate(
     )
     if not evaluate:
         raise HTTPException(status_code=404, detail="评估记录不存在")
-    return EvaluateResponse.from_orm(evaluate)
+    return EvaluateResponse.from_do(evaluate)
 
 
 @router.delete("/{evaluate_id}", summary="删除评估记录")
@@ -96,5 +97,5 @@ async def search_evaluates(
 
     return EvaluateListResponse(
         total=len(evaluates),
-        items=[EvaluateResponse.from_orm(e) for e in evaluates[offset:offset + limit]]
+        items=[EvaluateResponse.from_do(e) for e in evaluates[offset:offset + limit]]
     )

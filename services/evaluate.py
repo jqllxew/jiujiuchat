@@ -11,11 +11,12 @@ class EvaluateService(BaseService):
     def __init__(self, db: AsyncSession, redis: Redis):
         super().__init__(db, redis)
 
-    async def create_evaluate(self, question_groups: str, question: str, answer: List[str]) -> Evaluate:
+    async def create_evaluate(self, question_groups: str, question: str,question_content: str, answer: List[str]) -> Evaluate:
         """创建新的评估记录"""
         evaluate = Evaluate(
             question_groups=question_groups,
             question=question,
+            question_content=question_content,
             answer=answer
         )
         self.db.add(evaluate)
