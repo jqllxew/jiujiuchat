@@ -73,9 +73,9 @@ async def callback(
     try:
         plain_xml = crypto.decrypt_message(xml_for_decrypt, msg_signature, timestamp, nonce)
         logging.info(f"解密后的明文：\n{plain_xml}")
-
         plain_dict = xmltodict.parse(plain_xml)
         xml = plain_dict["xml"]
+
 
     except Exception as e:
         logging.error(f"解密失败: {e}")

@@ -5,12 +5,11 @@ from captcha.image import ImageCaptcha
 from fastapi import APIRouter, Depends, Response, Query
 from redis.asyncio import Redis
 
-from api.component.auth import get_app_user
 from db import get_redis
 from models.do import SuperDO
 from models.vo import RegisterVO
 from models.vo.login import LoginVO
-from services import get_service
+from services import get_service, get_app_user
 from services.login import LoginService
 
 router = APIRouter()
@@ -57,7 +56,7 @@ async def register(
     return user
 
 
-@router.post("/login", summary="登录")
+@router.post("/login", summary="注册/登录")
 async def login(
     *,
     login_vo: LoginVO,

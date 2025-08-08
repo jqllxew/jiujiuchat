@@ -4,7 +4,7 @@ from typing import Type, TypeVar
 
 from pydantic import BaseModel
 from sqlalchemy import Column, DateTime
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import declarative_base, DeclarativeBase
 from config.id import Snowflake
 
 snowflake = Snowflake(1, 1)

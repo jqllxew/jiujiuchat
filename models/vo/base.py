@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import TypeVar, Type
 
 import pydantic_core
-from pydantic import BaseModel, model_validator, ValidationError, field_serializer
+from pydantic import BaseModel, model_validator, ValidationError
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -42,3 +42,4 @@ class BaseResp(BaseModel):
         json_encoders = {
             datetime: lambda v: v.strftime("%Y-%m-%d %H:%M:%S")
         }
+        from_attributes = True

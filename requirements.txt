@@ -4,6 +4,8 @@ volcengine>=1.0.185
 httpx==0.28.1
 PyYAML==6.0.2
 python-jose==3.4.0
+pydantic==2.11.7
+pydantic_core==2.33.2
 pydantic-settings==2.8.1
 alibabacloud-oss-v2==1.1.1
 python-multipart==0.0.20

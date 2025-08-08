@@ -20,9 +20,6 @@ class PromptResponse(BaseResp):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
-
 
 class PromptUpdateRequest(BaseReq):
     """更新prompt请求模型"""

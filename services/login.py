@@ -52,6 +52,7 @@ class LoginService(BaseService):
             # & User.passwd.__eq__(vo.passwd)
         ))
         if not user_do:
+
             raise ServiceException("用户不存在")
         jwt_token = create_access_token({
             "id": user_do.id,

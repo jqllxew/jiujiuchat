@@ -32,9 +32,6 @@ class EvaluateResponse(BaseResp):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
-
 
 class EvaluateListResponse(BaseResp):
     """评估记录列表响应模型"""

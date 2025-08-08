@@ -3,7 +3,6 @@ from http.client import HTTPException
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
-from api.component.auth import get_lobe_user
 from services import UserService, get_service
 
 router = APIRouter()

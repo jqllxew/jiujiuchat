@@ -41,17 +41,15 @@ class MsgService(BaseService):
         logging.info(f"token: {sync_token}")
         logging.info(f"open_kfid: {open_kfid}")
         resp = requests.post(
-            f"https://qyapi.weixin.qq.com/cgi-bin/kf/sync_msg?access_token={access_token}",
-            json={
-                 # "cursor": "",
-                 "token": sync_token,
-                 # "limit": 1000,
-                 # "voice_format": 0,
-                 "open_kfid": open_kfid
-            }, timeout=10)
+            f"https://qyapi.weixin.qq.com/cgi-bin/kf/sync_msg?access_token={access_token}", json={
+             # "cursor": "",
+             "token": sync_token,
+             # "limit": 1000,
+             # "voice_format": 0,
+             "open_kfid": open_kfid
+        }, timeout=10)
         resp.raise_for_status()
         data = resp.json()
         next_cursor = data.get("next_cursor")
-
         logging.info(f"sync_msg 响应：{data}")
-        ...
+
