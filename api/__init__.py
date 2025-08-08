@@ -13,3 +13,5 @@ api_router.include_router(login.router, prefix="/login", tags=["登录"])
 api_router.include_router(user.router,prefix="/user" ,tags=["用户"])
 
 api_router.include_router(prompt.router, prefix="/prompts", tags=["系统人设管理"])  # 新增
+
+api_router.include_router(prompt.router,prefix="/evaluate",tags=["评估"])

@@ -1,6 +1,8 @@
+from pydantic import BaseModel
 from sqlalchemy import Column, String, Integer, Text
 
 from .base import Base, SuperDO
+
 
 
 class User(Base, SuperDO):
@@ -13,6 +15,19 @@ class User(Base, SuperDO):
     nickname: str = Column(String, comment="昵称")
     birth_year: int = Column(Integer, comment="出生年")
     gender: int = Column(Integer, comment="0男/1女")
+    type: str = Column(String,comment="用户类型")
+
+    @classmethod
+    def build_system(cls, m: BaseModel):
+        _m = cls.from_vo(m)
+        _m.type = "system"
+        return _m
+
+    @classmethod
+    def build_app(cls, m: BaseModel):
+        _m = cls.from_vo(m)
+        _m.type = "app"
+        return _m
 
 
 class UserPrompt(Base, SuperDO):

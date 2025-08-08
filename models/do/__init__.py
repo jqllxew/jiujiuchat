@@ -1,4 +1,5 @@
 from .base import Base, SuperDO
+from .evaluate import Evaluate
 from .prompt import Prompts
 from .qw import QwAccessToken
 from .user import User, UserPrompt
@@ -13,5 +14,6 @@ __all__ = [
     "SessionRole",
     "User",
     "UserPrompt",
-    "Prompts"
+    "Prompts",
+    "Evaluate"
 ]
