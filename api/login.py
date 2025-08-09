@@ -8,6 +8,7 @@ from redis.asyncio import Redis
 from db import get_redis
 from models.do import SuperDO
 from models.vo import RegisterVO
+from models.vo.base import Result
 from models.vo.login import LoginVO
 from services import get_service, get_app_user
 from services.login import LoginService
@@ -15,24 +16,16 @@ from services.login import LoginService
 router = APIRouter()
 
 
-def generate_code(length=4):
-    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
-
-
 @router.get("/captcha", summary="图形验证码")
 async def get_captcha(
     *,
-    redis: Redis = Depends(get_redis),
     width: int = Query(160, ge=120, description="宽度"),
     height: int = Query(60, ge=50, description="高度"),
+    login_service: LoginService = Depends(get_service(LoginService)),
 ):
-    code = generate_code()
-    captcha_id = str(SuperDO.generate_id())
-    image = ImageCaptcha(width=width, height=height)
-    data = image.generate(code)
-    await redis.setex(f"captcha:{captcha_id}", 180, code)
+    captcha_id, data = await login_service.get_captcha_img(width, height)
     return Response(
-        content=data.read(),
+        content=data,
         media_type="image/png",
         headers={"X-Captcha-Id": captcha_id}
     )
@@ -41,9 +34,11 @@ async def get_captcha(
 @router.get("/captcha-sms", summary="短信验证码")
 async def get_captcha_sms(
     *,
-    phone: str = Query(..., pattern=r"^1[3-9]\d{9}$", description="手机号")
+    phone: str = Query(..., pattern=r"^1[3-9]\d{9}$", description="手机号"),
+    login_service: LoginService = Depends(get_service(LoginService))
 ):
-    return {"msg": "ok"}
+    await login_service.get_captcha_sms(phone)
+    return Result.success_(msg="短信验证码已发送")
 
 
 @router.post("/register", summary="注册")
@@ -53,10 +48,10 @@ async def register(
     login_service: LoginService = Depends(get_service(LoginService)),
 ):
     user = await login_service.register(register_vo)
-    return user
+    return Result.success_(user)
 
 
-@router.post("/login", summary="注册/登录")
+@router.post("/login", summary="注册/登录", description="如果用户不存在则注册")
 async def login(
     *,
     login_vo: LoginVO,
@@ -71,4 +66,4 @@ async def session(
     *,
     user=Depends(get_app_user)
 ):
-    return user
+    return Result.success_(user)

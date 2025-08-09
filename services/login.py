@@ -1,12 +1,15 @@
 import hashlib
+import random
+import string
 from datetime import timedelta, datetime
 
+from captcha.image import ImageCaptcha
 from jose import jwt
 from sqlalchemy import select, func
 
 from config import configs
 from models.vo import RegisterVO
-from models.do import User
+from models.do import User, SuperDO
 from models.vo.login import LoginVO
 from services.base import BaseService
 from config.exc import ServiceException
@@ -23,13 +26,24 @@ def create_access_token(data: dict, expires_delta: timedelta = timedelta(hours=8
 
 class LoginService(BaseService):
 
+    async def get_captcha_img(self, width: int, height: int) -> tuple[str, bytes]:
+        code = "".join(random.choices(string.ascii_uppercase + string.digits, k=4))
+        captcha_id = str(SuperDO.generate_id())
+        image = ImageCaptcha(width=width, height=height)
+        data = image.generate(code)
+        await self.redis.setex(f"captcha:{captcha_id}", 180, code)
+        return captcha_id, data.read()
+
+    async def get_captcha_sms(self, phone: str):
+        ...
+
     async def check_captcha(self, captcha_id: str, captcha_code: str) -> str:
         _id = f"captcha:{captcha_id}"
         code = await self.redis.getex(_id)
         if not code:
             raise ServiceException("验证码已过期")
         if code != captcha_code.upper():
-            raise ServiceException("验证码输入错误")
+            raise ServiceException("验证码错误")
         return _id
 
     async def register(self, vo: RegisterVO):
@@ -52,8 +66,7 @@ class LoginService(BaseService):
             # & User.passwd.__eq__(vo.passwd)
         ))
         if not user_do:
-
-            raise ServiceException("用户不存在")
+            user_do = await self.register(vo)
         jwt_token = create_access_token({
             "id": user_do.id,
             "phone": user_do.phone,

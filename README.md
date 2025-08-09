@@ -1,5 +1,7 @@
 # jiujiu-chat
 
+## Python 3.11
+
 ## Docker
 ```bash
 docker build -t jiujiu-chat:latest .

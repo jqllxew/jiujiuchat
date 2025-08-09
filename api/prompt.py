@@ -1,8 +1,9 @@
 from http.client import HTTPException
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Path
 from typing import Optional, List
 
+from models.vo.base import Result, Page
 from models.vo.prompt import (
     PromptCreateRequest,
     PromptUpdateRequest,
@@ -28,28 +29,30 @@ async def create_prompt(
     return PromptResponse.from_do(prompt)
 
 
-@router.get("/{prompt_id}", response_model=PromptResponse, summary="获取人设详情")
+@router.get("/{prompt_id}", response_model=Result[PromptResponse], summary="获取人设详情")
 async def get_prompt(
-    prompt_id: str,
+    prompt_id: str = Path(..., description="人设ID"),
     prompt_service: PromptService = Depends(get_service(PromptService))
-) -> PromptResponse:
+):
     """根据ID获取人设详情"""
     prompt = await prompt_service.get_prompt(prompt_id)
     if not prompt:
-        raise HTTPException(status_code=404, detail="人设不存在")
-    return PromptResponse.from_do(prompt)
+        return Result.error_("人设不存在")
+    return Result.success_(PromptResponse.from_do(prompt))
 
 
-@router.get("", response_model=PromptListResponse, summary="获取人设列表")
+@router.get("", response_model=Result[Page[PromptResponse]], summary="获取人设列表")
 async def get_prompts(
     state: Optional[str] = Query(None, description="按状态筛选"),
     prompt_service: PromptService = Depends(get_service(PromptService))
-) -> PromptListResponse:
+):
     """获取所有人设列表"""
     prompts = await prompt_service.get_all_prompts(state=state)
-    return PromptListResponse(
-        total=len(prompts),
-        items=[PromptResponse.from_do(p) for p in prompts]
+    return Result.success_(
+        Page[PromptResponse](
+            total=len(prompts),
+            items=[PromptResponse.from_do(prompt) for prompt in prompts]
+        )
     )
 
 
@@ -58,7 +61,7 @@ async def update_prompt(
     prompt_id: str,
     request: PromptUpdateRequest,
     prompt_service: PromptService = Depends(get_service(PromptService))
-) -> PromptResponse:
+):
     """更新人设信息"""
     prompt = await prompt_service.update_prompt(
         prompt_id=prompt_id,
@@ -67,7 +70,7 @@ async def update_prompt(
         state=request.state
     )
     if not prompt:
-        raise HTTPException(status_code=404, detail="人设不存在")
+        return Result.error_("人设不存在")
     return PromptResponse.from_do(prompt)
 
 
@@ -75,21 +78,21 @@ async def update_prompt(
 async def delete_prompt(
     prompt_id: str,
     prompt_service: PromptService = Depends(get_service(PromptService))
-) -> dict:
+):
     """删除人设（软删除）"""
     success = await prompt_service.delete_prompt(prompt_id)
     if not success:
-        raise HTTPException(status_code=404, detail="人设不存在")
-    return {"success": True, "message": "删除成功"}
+        return Result.error_("人设不存在")
+    return Result.success_(msg="删除成功")
 
 
 @router.delete("/{prompt_id}/hard", summary="彻底删除人设")
 async def hard_delete_prompt(
     prompt_id: str,
     prompt_service: PromptService = Depends(get_service(PromptService))
-) -> dict:
+):
     """彻底删除人设（不可恢复）"""
     success = await prompt_service.hard_delete_prompt(prompt_id)
     if not success:
-        raise HTTPException(status_code=404, detail="人设不存在")
-    return {"success": True, "message": "已彻底删除"}
+        return Result.error_("人设不存在")
+    return Result.success_("已彻底删除")
