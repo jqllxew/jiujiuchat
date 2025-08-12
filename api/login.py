@@ -40,7 +40,7 @@ async def login(
     login_service: LoginService = Depends(get_service(LoginService))
 ):
     jwt_token = await login_service.login(login_vo)
-    return Result.success_(jwt_token)
+    return jwt_token
 
 
 @router.post("/login-system", summary="登录(system)")
@@ -50,7 +50,7 @@ async def login_by_password(
     login_service: LoginService = Depends(get_service(LoginService))
 ):
     jwt_token = await login_service.login_by_password(login_vo)
-    return Result.success_(jwt_token)
+    return jwt_token
 
 
 @router.get("/session", summary="获取登录用户(app)")
