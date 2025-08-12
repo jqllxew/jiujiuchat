@@ -17,3 +17,13 @@ class RegisterVO(BaseReq):
 
 class LoginVO(RegisterVO):
     ...
+
+
+class LoginByPasswordVO(LoginVO):
+    passwd: str = Field(..., description="密码")
+
+    @field_validator("passwd")
+    def validate_passwd(cls, v):
+        if len(v) < 6 or len(v) > 20:
+            raise ValueError("密码长度必须在6到20个字符之间")
+        return v

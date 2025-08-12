@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update, delete
 from redis.asyncio import Redis
@@ -7,8 +9,6 @@ from services.base import BaseService
 
 
 class PromptService(BaseService):
-    def __init__(self, db: AsyncSession, redis: Redis):
-        super().__init__(db, redis)
 
     async def create_prompt(self, prompt: str, title: str) -> Prompts:
         """创建新的人设prompt"""
@@ -24,15 +24,15 @@ class PromptService(BaseService):
 
     async def get_prompt(self, prompt_id: str) -> Prompts | None:
         """根据ID获取prompt"""
-        stmt = select(Prompts).where(Prompts.id == prompt_id)
+        stmt = select(Prompts).where(Prompts.id.__eq__(prompt_id))
         result = await self.db.execute(stmt)
         return result.scalar_one_or_none()
 
-    async def get_all_prompts(self, state: str = None) -> list[Prompts]:
+    async def get_all_prompts(self, state: str = None) -> Sequence[Prompts]:
         """获取所有prompt，可按状态筛选"""
         stmt = select(Prompts)
         if state:
-            stmt = stmt.where(Prompts.state == state)
+            stmt = stmt.where(Prompts.state.__eq__(state))
         stmt = stmt.order_by(Prompts.created_at.desc())
         result = await self.db.execute(stmt)
         return result.scalars().all()
@@ -41,7 +41,7 @@ class PromptService(BaseService):
         """更新prompt"""
         stmt = (
             update(Prompts)
-            .where(Prompts.id == prompt_id)
+            .where(Prompts.id.__eq__(prompt_id))
             .values(**{k: v for k, v in kwargs.items() if v is not None})
             .execution_options(synchronize_session="fetch")
         )
@@ -60,7 +60,7 @@ class PromptService(BaseService):
 
     async def hard_delete_prompt(self, prompt_id: str) -> bool:
         """硬删除prompt"""
-        stmt = delete(Prompts).where(Prompts.id == prompt_id)
+        stmt = delete(Prompts).where(Prompts.id.__eq__(prompt_id))
         result = await self.db.execute(stmt)
         await self.db.commit()
-        return result.rowcount > 0
+        return result.rowcount() > 0

@@ -1,5 +1,5 @@
 from .base import Base, SuperDO
-from .evaluate import Evaluate
+from .questionnaire import Questionnaire
 from .prompt import Prompts
 from .qw import QwAccessToken
 from .user import User, UserPrompt
@@ -15,5 +15,5 @@ __all__ = [
     "User",
     "UserPrompt",
     "Prompts",
-    "Evaluate"
+    "Questionnaire"
 ]

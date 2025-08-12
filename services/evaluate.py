@@ -1,72 +1,86 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, update, delete
-from redis.asyncio import Redis
-from typing import List, Optional
+from sqlalchemy import select, update, delete, func, inspect
+from typing import List, Sequence
 
-from models.do.evaluate import Evaluate
+from sqlalchemy import select, update, delete
+
+from config.exc import ServiceException
+from models.do.questionnaire import Questionnaire, UserQuestionnaire
+from models.vo.questionnaire import QuestionnaireSearchRequest, QuestionnaireSaveReq, QuestionnaireAnswersReq
 from services.base import BaseService
 
 
-class EvaluateService(BaseService):
-    def __init__(self, db: AsyncSession, redis: Redis):
-        super().__init__(db, redis)
+class QuestionnaireService(BaseService):
 
-    async def create_evaluate(self, question_groups: str, question: str,question_content: str, answer: List[str]) -> Evaluate:
-        """创建新的评估记录"""
-        evaluate = Evaluate(
-            question_groups=question_groups,
-            question=question,
-            question_content=question_content,
-            answer=answer
-        )
-        self.db.add(evaluate)
+    async def save_questionnaire(self, req: QuestionnaireSaveReq) -> Questionnaire:
+        """保存问卷项"""
+        evaluate = Questionnaire.from_vo(req)
+        if evaluate.id:
+            # 更新操作
+            cnt = await self.select_first(select(func.count()).select_from(Questionnaire).where(
+                Questionnaire.id.__eq__(evaluate.id)
+            ))
+            if cnt == 0:
+                raise ServiceException("问卷项不存在")
+            # 更新现有记录
+            stmt = (
+                update(Questionnaire)
+                .where(Questionnaire.id.__eq__(evaluate.id))
+                .values(**evaluate.to_dict())
+            )
+            await self.db.execute(stmt)
+        else:
+            evaluate.id = None
+            self.db.add(evaluate)
         await self.db.commit()
-        await self.db.refresh(evaluate)
         return evaluate
 
-    async def get_evaluate(self, evaluate_id: str) -> Evaluate | None:
-        """根据ID获取评估记录"""
-        stmt = select(Evaluate).where(Evaluate.id == evaluate_id)
-        result = await self.db.execute(stmt)
-        return result.scalar_one_or_none()
+    # async def get_questionnaire(self, evaluate_id: str) -> Questionnaire | None:
+    #     """根据ID获取评估记录"""
+    #     stmt = select(Questionnaire).where(Questionnaire.id.__eq__(evaluate_id))
+    #     result = await self.db.execute(stmt)
+    #     return result.scalar_one_or_none()
 
-    async def get_all_evaluates(self, limit: int = 100, offset: int = 0) -> List[Evaluate]:
+    async def get_questionnaires(self, req: QuestionnaireSearchRequest) -> tuple[Sequence[Questionnaire], int]:
         """获取所有评估记录，支持分页"""
-        stmt = select(Evaluate).order_by(Evaluate.created_at.desc()).limit(limit).offset(offset)
-        result = await self.db.execute(stmt)
-        return result.scalars().all()
+        conditions = []
+        if req.question_groups:
+            conditions.append(Questionnaire.question_groups.contains(req.question_groups))
+        if req.question:
+            conditions.append(Questionnaire.question.contains(req.question))
+        if req.question_content:
+            conditions.append(Questionnaire.question_content.contains(req.question_content))
+        result, total = await self.select_page(select(Questionnaire).where(
+            *conditions
+        ).order_by(Questionnaire.id.asc()), req.page, req.limit)
+        return result, total
 
-    async def update_evaluate(self, evaluate_id: str, **kwargs) -> Evaluate | None:
-        """更新评估记录"""
-        stmt = (
-            update(Evaluate)
-            .where(Evaluate.id == evaluate_id)
-            .values(**{k: v for k, v in kwargs.items() if v is not None})
-            .execution_options(synchronize_session="fetch")
-        )
-        await self.db.execute(stmt)
-        await self.db.commit()
-        return await self.get_evaluate(evaluate_id)
+    async def save_user_answers(self, req: QuestionnaireAnswersReq):
+        qa = await self.select_list(select(Questionnaire))
+        qa_dict = {q.id: q for q in qa}
+        qas = []
+        for a in req.answers:
+            _qa = qa_dict.get(a.id)
+            if not _qa:
+                raise ServiceException(f"问卷项 {a.id} 不存在")
+            if a.answer not in _qa.answer:
+                raise ServiceException(f"答案 {a.answer} 不在问卷项 {_qa.id} 的答案列表中")
+            user_qa = UserQuestionnaire(
+                user_id=req.user_id,
+                questionnaire_id=_qa.id,
+                answer=a.answer
+            )
+            qas.append(user_qa)
+        if qas:
+            self.db.add_all(qas)
+            await self.db.commit()
 
-    async def delete_evaluate(self, evaluate_id: str) -> bool:
+        # 计算并保存维度分数
+
+
+
+    async def delete_questionnaire(self, evaluate_id: str) -> bool:
         """删除评估记录"""
-        stmt = delete(Evaluate).where(Evaluate.id == evaluate_id)
+        stmt = delete(Questionnaire).where(Questionnaire.id.__eq__(evaluate_id))
         result = await self.db.execute(stmt)
         await self.db.commit()
-        return result.rowcount > 0
-
-    async def search_by_question(self, question_keyword: str) -> List[Evaluate]:
-        """根据问题关键词搜索"""
-        stmt = select(Evaluate).where(
-            Evaluate.question.contains(question_keyword)
-        ).order_by(Evaluate.created_at.desc())
-        result = await self.db.execute(stmt)
-        return result.scalars().all()
-
-    async def search_by_groups(self, groups_keyword: str) -> List[Evaluate]:
-        """根据问题组关键词搜索"""
-        stmt = select(Evaluate).where(
-            Evaluate.question_groups.contains(groups_keyword)
-        ).order_by(Evaluate.created_at.desc())
-        result = await self.db.execute(stmt)
-        return result.scalars().all()
+        return result.rowcount() > 0

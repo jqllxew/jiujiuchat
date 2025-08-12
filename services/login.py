@@ -10,7 +10,7 @@ from sqlalchemy import select, func
 from config import configs
 from models.vo import RegisterVO
 from models.do import User, SuperDO
-from models.vo.login import LoginVO
+from models.vo.login import LoginVO, LoginByPasswordVO
 from services.base import BaseService
 from config.exc import ServiceException
 
@@ -74,3 +74,18 @@ class LoginService(BaseService):
         })
         # await self.redis.delete(captcha_id)
         return jwt_token
+
+    async def login_by_password(self, vo: LoginByPasswordVO):
+        user_do = await self.select_first(select(User).where(
+            User.phone.__eq__(vo.phone)
+            & User.passwd.__eq__(vo.passwd)
+        ))
+        if not user_do:
+            raise ServiceException("手机号或密码错误")
+        jwt_token = create_access_token({
+            "id": user_do.id,
+            "phone": user_do.phone,
+            "nickname": user_do.nickname,
+        })
+        return jwt_token
+

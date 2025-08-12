@@ -1,14 +1,12 @@
-from http.client import HTTPException
+from typing import Optional
 
 from fastapi import APIRouter, Depends, Query, Path
-from typing import Optional, List
 
 from models.vo.base import Result, Page
 from models.vo.prompt import (
     PromptCreateRequest,
     PromptUpdateRequest,
-    PromptResponse,
-    PromptListResponse
+    PromptResponse
 )
 from services import PromptService, get_service
 
