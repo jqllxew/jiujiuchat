@@ -55,7 +55,7 @@ class BaseResp(BaseModel):
 class Result(BaseModel, Generic[T]):
     success: bool = True
     msg: Optional[list] = None
-    data: T = None
+    data: Optional[T] = None
 
     @classmethod
     def error_(cls, msg: str | list, status_code: int = HTTP_422_UNPROCESSABLE_ENTITY) -> JSONResponse:

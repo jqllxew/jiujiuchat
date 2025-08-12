@@ -62,21 +62,32 @@ class QuestionnaireService(BaseService):
             _qa = qa_dict.get(a.id)
             if not _qa:
                 raise ServiceException(f"问卷项 {a.id} 不存在")
-            if a.answer not in _qa.answer:
+            if not set(a.answer).issubset(_qa.answer):
                 raise ServiceException(f"答案 {a.answer} 不在问卷项 {_qa.id} 的答案列表中")
-            user_qa = UserQuestionnaire(
-                user_id=req.user_id,
-                questionnaire_id=_qa.id,
-                answer=a.answer
-            )
-            qas.append(user_qa)
+            user_qa = await self.select_first(select(UserQuestionnaire).where(
+                UserQuestionnaire.user_id.__eq__(req.user_id) &
+                UserQuestionnaire.questionnaire_id.__eq__(_qa.id)
+            ))
+            if user_qa:
+                # 更新用户答案
+                stmt = (
+                    update(UserQuestionnaire)
+                    .where(UserQuestionnaire.id.__eq__(user_qa.id))
+                    .values(answer=a.answer)
+                )
+                await self.db.execute(stmt)
+            else:
+                # 新增用户答案
+                user_qa = UserQuestionnaire(
+                    user_id=req.user_id,
+                    questionnaire_id=_qa.id,
+                    answer=a.answer
+                )
+                qas.append(user_qa)
         if qas:
             self.db.add_all(qas)
             await self.db.commit()
-
         # 计算并保存维度分数
-
-
 
     async def delete_questionnaire(self, evaluate_id: str) -> bool:
         """删除评估记录"""

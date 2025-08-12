@@ -10,7 +10,7 @@ from config import configs
 from config.exc import ServiceException
 from db import get_db, get_redis
 from .base import BaseService
-from .evaluate import QuestionnaireService
+from .questionnaire import QuestionnaireService
 from .prompt import PromptService
 from .qw import TokenService
 from .user import UserService
