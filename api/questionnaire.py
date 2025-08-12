@@ -44,10 +44,10 @@ async def answer_questionnaire(
     *,
     req: QuestionnaireAnswersReq,
     questionnaire_service: QuestionnaireService = Depends(get_service(QuestionnaireService)),
-    userinfo=Depends(get_app_user)
+    userinfo: dict = Depends(get_app_user)
 ):
     if not req.user_id:
-        req.user_id = userinfo.id
+        req.user_id = userinfo.get("id")
     await questionnaire_service.save_user_answers(req)
     return Result.success_(msg="提交成功")
 
