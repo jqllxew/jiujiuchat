@@ -44,9 +44,9 @@ async def get_questionnaires(
     """获取评估记录列表，支持分页"""
     result, total = await service.get_questionnaires(req)
     return Result.success_(
-        Page[QuestionnaireResponse](
+        Page[GroupResp](
             total=total,
-            items=[QuestionnaireResponse.from_do(e) for e in result]
+            items=result
         )
     )
 

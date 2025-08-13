@@ -51,6 +51,7 @@ class GroupResp(BaseResp):
     name: Optional[str] = None
     weights: Optional[dict] = None
     sort: Optional[int] = None
+    qs: list["QuestionnaireResponse"] = None
 
 
 class QuestionnaireResponse(BaseResp):
@@ -60,6 +61,7 @@ class QuestionnaireResponse(BaseResp):
     question: Optional[str] = None
     question_content: Optional[str] = None
     answer: Optional[list] = None
+    sort: Optional[int] = None
 
 
 # class QuestionnaireListResponse(BaseResp):
@@ -72,6 +74,6 @@ class QuestionnaireSearchRequest(BaseReq):
     """搜索评估记录请求模型"""
     page: int = Field(..., ge=1, description="页数")
     limit: int = Field(10, ge=1, le=1000, description="每页数量")
-    group_name: Optional[str] = Field(None, description="问题组")
-    question: Optional[str] = Field(None, description="问题内容")
-    question_content: Optional[str] = Field(None, description="问题详细内容")
+    # group_name: Optional[str] = Field(None, description="问题组")
+    # question: Optional[str] = Field(None, description="问题内容")
+    # question_content: Optional[str] = Field(None, description="问题详细内容")

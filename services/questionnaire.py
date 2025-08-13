@@ -5,7 +5,8 @@ from sqlalchemy import select, update, delete
 
 from config.exc import ServiceException
 from models.do.questionnaire import Questionnaire, UserQuestionnaire, QuestionnaireGroup
-from models.vo.questionnaire import QuestionnaireSearchRequest, QuestionnaireSaveReq, QuestionnaireAnswersReq
+from models.vo.questionnaire import QuestionnaireSearchRequest, QuestionnaireSaveReq, QuestionnaireAnswersReq, \
+    GroupResp, QuestionnaireResponse
 from services.base import BaseService
 
 
@@ -25,7 +26,6 @@ class QuestionnaireService(BaseService):
             await self.db.execute(stmt)
         else:
             group = QuestionnaireGroup(name=group_name, weights=weights)
-            print(group.weights)
             self.db.add(group)
         await self.db.commit()
         return group
@@ -55,25 +55,31 @@ class QuestionnaireService(BaseService):
         await self.db.commit()
         return evaluate
 
-    async def get_questionnaires(self, req: QuestionnaireSearchRequest) -> tuple[Sequence[Questionnaire], int]:
+    async def get_questionnaires(self, req: QuestionnaireSearchRequest) -> tuple[list, int]:
         """获取所有评估记录，支持分页"""
-        conditions = []
-        if req.group_name:
-            groups = await self.select_list(select(QuestionnaireGroup).where(
-                QuestionnaireGroup.name.like(req.group_name)
-            ))
-            if groups:
-                conditions.append(Questionnaire.group_id.in_([g.id for g in groups]))
-        if req.question:
-            conditions.append(Questionnaire.question.contains(req.question))
-        if req.question_content:
-            conditions.append(Questionnaire.question_content.contains(req.question_content))
-        result, total = await self.select_page(select(Questionnaire).where(
-            *conditions
+        groups, total = await self.select_page(select(QuestionnaireGroup).order_by(
+            QuestionnaireGroup.sort.asc(),
+            QuestionnaireGroup.id.asc()
+        ), req.page, req.limit)
+        if not groups:
+            return [], 0
+        # 获取 每个组下的问卷项
+        group_dict = {g.id: g for g in groups}
+        group_ids = list(group_dict.keys())
+        stmt = select(Questionnaire).where(
+            Questionnaire.group_id.in_(group_ids)
         ).order_by(
             Questionnaire.sort.asc(),
             Questionnaire.id.asc()
-        ), req.page, req.limit)
+        )
+        questionnaires = await self.select_list(stmt)
+        # 将问卷项按组分类
+        result = []
+        for group in groups:
+            group_qs = [q for q in questionnaires if q.group_id == group.id]
+            group_resp = GroupResp.from_do(group)
+            group_resp.qs = [QuestionnaireResponse.from_do(q) for q in group_qs]
+            result.append(group_resp)
         return result, total
 
     async def save_user_answers(self, req: QuestionnaireAnswersReq):
