@@ -27,6 +27,6 @@ class SuperDO:
         filtered_data = {k: v for k, v in vo_dict.items() if k in do_fields}
         return cls(**filtered_data)
 
-    def to_dict(self) -> dict:
+    def to_update_dict(self) -> dict:
         return {c.key: getattr(self, c.key) for c in self.__table__.columns
                 if c.key not in ['created_at', 'updated_at', 'id'] and getattr(self, c.key) is not None}

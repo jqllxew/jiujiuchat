@@ -1,4 +1,4 @@
-from typing import Any, Sequence
+from typing import Any, Sequence, TypeVar
 
 from redis.asyncio import Redis
 from sqlalchemy import Select, select, func

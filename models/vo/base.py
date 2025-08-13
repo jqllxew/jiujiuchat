@@ -1,13 +1,13 @@
 from datetime import datetime
 from typing import TypeVar, Type, Any, Optional, Generic
 
-from fastapi import Request
 from fastapi.exceptions import RequestValidationError
 from pydantic import BaseModel, model_validator
 from starlette.responses import JSONResponse
 from starlette.status import HTTP_422_UNPROCESSABLE_ENTITY
 
 T = TypeVar("T", bound=BaseModel)
+AnyT = TypeVar("AnyT")
 
 
 class BaseReq(BaseModel):
@@ -52,10 +52,10 @@ class BaseResp(BaseModel):
         from_attributes = True
 
 
-class Result(BaseModel, Generic[T]):
+class Result(BaseModel, Generic[AnyT]):
     success: bool = True
     msg: Optional[list] = None
-    data: Optional[T] = None
+    data: Optional[AnyT] = None
 
     @classmethod
     def error_(cls, msg: str | list, status_code: int = HTTP_422_UNPROCESSABLE_ENTITY) -> JSONResponse:
@@ -74,10 +74,10 @@ class Result(BaseModel, Generic[T]):
         return cls(data=data, msg=msg)
 
 
-class Page(BaseModel, Generic[T]):
+class Page(BaseModel, Generic[AnyT]):
     total: int
-    items: list[T]
+    items: Optional[list[AnyT]]
 
     @classmethod
-    def from_items(cls: Type[T], items: list[Any], total: int) -> "Page":
+    def from_items(cls, items: list[Any], total: int) -> "Page":
         return cls(total=total, items=items)
