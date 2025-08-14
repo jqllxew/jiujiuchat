@@ -37,7 +37,7 @@ class QuestionnaireService(BaseService):
 
     async def save_questionnaire(self, req: QuestionnaireSaveReq) -> Questionnaire:
         """保存问卷项"""
-        group = await self._save_group(req.group_name, req.weights, req.sub_name, req.sub_name_en)
+        group = await self._save_group(req.group_name, req.weights, req.sub_name, req.sub_name_en, req.group_sort)
         evaluate = Questionnaire.from_vo(req)
         evaluate.group_id = group.id
         if evaluate.id:
