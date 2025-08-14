@@ -12,7 +12,7 @@ class QuestionnaireSaveReq(BaseReq):
     group_name: str = Field(..., description="问题组名称(若不存在则创建)")
     question: Optional[str] = Field(None, description="问题内容")
     question_content: Optional[str] = Field(None, description="问题详细内容")
-    answer: List[str] = Field(..., description="答案列表")
+    answer: List[str] = Field(None, description="答案列表")
     answer_extreme: Optional[List[str]] = Field(None, description="答案两端倾向")
     weights: Optional[dict] = Field(None, description="维度权重")
     sort: Optional[int] = Field(None, description="排序")
