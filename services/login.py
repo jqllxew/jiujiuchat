@@ -8,9 +8,8 @@ from jose import jwt
 from sqlalchemy import select, func
 
 from config import configs
-from models.vo import RegisterVO
 from models.do import User, SuperDO
-from models.vo.login import LoginVO, LoginByPasswordVO
+from models.vo.login import LoginVO, LoginByPasswordVO, RegisterVO
 from services.base import BaseService
 from config.exc import ServiceException
 

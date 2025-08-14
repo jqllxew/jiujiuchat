@@ -14,6 +14,8 @@ class QuestionnaireGroup(Base, SuperDO):
     id: Optional[str] = Column(String, primary_key=True, default=SuperDO.generate_id)
     name: Optional[str] = Column(String, unique=True, nullable=False, comment="组名")
     weights: Optional[dict] = Column(JSONB, nullable=True, default=None, comment="维度权重")
+    sub_name: Optional[str] = Column(String, nullable=True, comment="子组名")
+    sub_name_en: Optional[str] = Column(String, nullable=True, comment="子组名英文")
     sort: Optional[int] = Column(Integer, nullable=True, default=0, comment="排序")
 
 

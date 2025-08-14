@@ -6,7 +6,7 @@ from pydantic import Field
 from models.vo.base import Result, BaseResp, BaseReq
 from services import UserService, get_service, get_app_user
 
-router = APIRouter()
+router = APIRouter(include_in_schema=False)
 
 
 class UpdatePromptRequest(BaseReq):

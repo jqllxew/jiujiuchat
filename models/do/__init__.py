@@ -1,5 +1,5 @@
 from .base import Base, SuperDO
-from .questionnaire import Questionnaire
+from .qa import Questionnaire, QuestionnaireGroup, UserQuestionnaire, UserDimensional
 from .prompt import Prompts
 from .qw import QwAccessToken
 from .user import User, UserPrompt

@@ -16,6 +16,9 @@ class QuestionnaireSaveReq(BaseReq):
     answer_extreme: Optional[List[str]] = Field(None, description="答案两端倾向")
     weights: Optional[dict] = Field(None, description="维度权重")
     sort: Optional[int] = Field(None, description="排序")
+    group_sort: Optional[int] = Field(None, description="问题组排序")
+    sub_name: Optional[str] = Field(None, description="子组名")
+    sub_name_en: Optional[str] = Field(None, description="子组名英文")
 
     @field_validator("weights")
     def validate_weights(cls, v):
@@ -51,6 +54,8 @@ class GroupResp(BaseResp):
     name: Optional[str] = None
     weights: Optional[dict] = None
     sort: Optional[int] = None
+    sub_name: Optional[str] = None
+    sub_name_en: Optional[str] = None
     qs: list["QuestionnaireResponse"] = None
 
 

@@ -4,15 +4,17 @@ from typing import List, Sequence
 from sqlalchemy import select, update, delete
 
 from config.exc import ServiceException
-from models.do.questionnaire import Questionnaire, UserQuestionnaire, QuestionnaireGroup
-from models.vo.questionnaire import QuestionnaireSearchRequest, QuestionnaireSaveReq, QuestionnaireAnswersReq, \
+from models.do.qa import Questionnaire, UserQuestionnaire, QuestionnaireGroup
+from models.vo.qa import QuestionnaireSearchRequest, QuestionnaireSaveReq, QuestionnaireAnswersReq, \
     GroupResp, QuestionnaireResponse
 from services.base import BaseService
 
 
 class QuestionnaireService(BaseService):
 
-    async def _save_group(self, group_name: str, weights: List[str] = None):
+    async def _save_group(self, group_name: str, weights: List[str] = None, sub_name: str = None,
+                          sub_name_en: str = None, group_sort: int = None) -> QuestionnaireGroup:
+        """保存或更新问卷组"""
         group = await self.select_first(select(QuestionnaireGroup).where(
             QuestionnaireGroup.name.__eq__(group_name)
         ))
@@ -25,14 +27,17 @@ class QuestionnaireService(BaseService):
             ))
             await self.db.execute(stmt)
         else:
-            group = QuestionnaireGroup(name=group_name, weights=weights)
+            group = QuestionnaireGroup(
+                name=group_name, weights=weights,
+                sub_name=sub_name, sub_name_en=sub_name_en,
+                sort=group_sort)
             self.db.add(group)
         await self.db.commit()
         return group
 
     async def save_questionnaire(self, req: QuestionnaireSaveReq) -> Questionnaire:
         """保存问卷项"""
-        group = await self._save_group(req.group_name, req.weights)
+        group = await self._save_group(req.group_name, req.weights, req.sub_name, req.sub_name_en)
         evaluate = Questionnaire.from_vo(req)
         evaluate.group_id = group.id
         if evaluate.id:

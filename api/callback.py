@@ -8,7 +8,7 @@ from wechatpy.crypto import WeChatCrypto
 from config import configs
 from services import get_service, TokenService
 
-router = APIRouter()
+router = APIRouter(include_in_schema=False)
 crypto = WeChatCrypto(configs.QW_TOKEN, configs.QW_ENCODING_AES_KEY, configs.QW_CORP_ID)
 
 

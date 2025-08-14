@@ -25,4 +25,3 @@ class UserPrompt(Base, SuperDO):
     prompt = Column(Text,comment="人设")
     title = Column(String,comment="标题")
     state = Column(String,comment="状态")
-

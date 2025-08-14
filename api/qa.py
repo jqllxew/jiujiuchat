@@ -2,9 +2,9 @@
 from fastapi import APIRouter, Depends, Path
 from sqlalchemy import select
 
-from models.do.questionnaire import QuestionnaireGroup
+from models.do.qa import QuestionnaireGroup
 from models.vo.base import Result, Page
-from models.vo.questionnaire import (
+from models.vo.qa import (
     QuestionnaireResponse,
     QuestionnaireSearchRequest,
     QuestionnaireSaveReq,
