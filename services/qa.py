@@ -18,19 +18,19 @@ class QuestionnaireService(BaseService):
         group = await self.select_first(select(QuestionnaireGroup).where(
             QuestionnaireGroup.name.__eq__(group_name)
         ))
+        update_do = QuestionnaireGroup(
+            name=group_name, weights=weights,
+            sub_name=sub_name, sub_name_en=sub_name_en,
+            sort=group_sort)
         if group:
             stmt = (
                 update(QuestionnaireGroup)
                 .where(QuestionnaireGroup.id.__eq__(group.id))
-                .values(name=group_name,
-                        weights=weights if weights is not None else group.weights
-            ))
+                .values(update_do.to_update_dict())
+            )
             await self.db.execute(stmt)
         else:
-            group = QuestionnaireGroup(
-                name=group_name, weights=weights,
-                sub_name=sub_name, sub_name_en=sub_name_en,
-                sort=group_sort)
+            group = update_do
             self.db.add(group)
         await self.db.commit()
         return group
