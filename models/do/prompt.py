@@ -9,3 +9,4 @@ class Prompts(Base, SuperDO):
     prompt: str = Column(Text,comment="人设")
     title: str = Column(String,comment="标题")
     state: str = Column(String,comment="状态")
+    version: float = Column(Integer, nullable=False,default=0, comment="版本")

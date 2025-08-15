@@ -1,0 +1,4 @@
+
+[project]
+dependencies = ["fastapi>=0.104.1", "uvicorn>=0.24.0", "volcengine>=1.0.185", "httpx==0.28.1", "PyYAML==6.0.2", "python-jose==3.4.0", "pydantic==2.11.7", "pydantic-core==2.33.2", "pydantic-settings==2.8.1", "alibabacloud-oss-v2==1.1.1", "python-multipart==0.0.20", "wechatpy==1.8.18", "xmltodict==0.14.2", "SQLAlchemy==2.0.39", "psycopg2-binary==2.9.10", "alembic>=1.15.1", "asyncpg==0.30.0", "openai==1.68.2", "redis==6.2.0", "captcha==0.7.1"]
+requires-python = ">=3.12"
